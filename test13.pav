@@ -1,0 +1,5 @@
+  void Main () {
+    set s, t = {7, 8};
+    int i = 900;
+    if (2 * i in { 1, 2, 3 .. 8 } + {}) writeLine("bad compiler");
+  } // Main

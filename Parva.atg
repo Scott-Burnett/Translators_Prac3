@@ -1,0 +1,65 @@
+  COMPILER Parva $CN
+  /* Parva level 1 grammar  - Coco/R for C# (EBNF)
+     P.D. Terry, Rhodes University, 2003
+     Grammar only */
+
+  CHARACTERS
+    lf         = CHR(10) .
+    backslash  = CHR(92) .
+    control    = CHR(0) .. CHR(31) .
+    letter     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                 + "abcdefghijklmnopqrstuvwxyz" .
+    digit      = "0123456789" .
+    stringCh   = ANY - '"' - control - backslash .
+    charCh     = ANY - "'" - control - backslash .
+    printable  = ANY - control .
+
+  TOKENS
+    identifier = letter { letter | digit | "_" } .
+    number     = digit { digit } .
+    stringLit  = '"' { stringCh | backslash printable } '"' .
+    charLit    = "'" ( charCh   | backslash printable ) "'" .
+
+  COMMENTS FROM "//" TO lf
+  COMMENTS FROM "/*" TO "*/"
+  IGNORE CHR(9) .. CHR(13)
+
+  PRODUCTIONS
+    Parva             = "void" identifier "(" ")" Block .
+    Block             = "{" { Statement } "}" .
+    Statement         =   Block | ";"
+                        | ConstDeclarations | VarDeclarations
+                        | Assignment | IfStatement | WhileStatement
+                        | ReturnStatement | HaltStatement
+                        | ReadStatement | WriteStatement .
+    ConstDeclarations = "const" OneConst { "," OneConst } ";" .
+    OneConst          = identifier "=" Constant .
+    Constant          =   number | charLit
+                        | "true" | "false" | "null" .
+    VarDeclarations   = Type OneVar { "," OneVar } ";" .
+    OneVar            = identifier [ "=" Expression ] .
+    Assignment        = Designator "=" Expression ";" .
+    Designator        = identifier [ "[" Expression "]" ] .
+    IfStatement       = "if" "(" Condition ")" Statement .
+    WhileStatement    = "while" "(" Condition ")" Statement .
+    ReturnStatement   = "return" ";" .
+    HaltStatement     = "halt" ";" .
+    ReadStatement     = "read" "(" ReadElement
+                                   { "," ReadElement } ")" ";" .
+    ReadElement       = stringLit | Designator .
+    WriteStatement    = "write" "(" WriteElement
+                                    { "," WriteElement } ")" ";" .
+    WriteElement      = stringLit | Expression .
+    Condition         = Expression .
+    Expression        = AddExp [ RelOp AddExp ] .
+    AddExp            = [ "+" | "-" ] Term { AddOp Term } .
+    Term              = Factor { MulOp Factor } .
+    Factor            =   Designator | Constant
+                        | "new" BasicType "[" Expression "]"
+                        | "!" Factor | "(" Expression ")" .
+    Type              = BasicType [ "[]" ] .
+    BasicType         = "int" | "bool" .
+    AddOp             = "+" | "-" | "||" .
+    MulOp             = "*" | "/" | "&&" .
+    RelOp             = "==" | "!=" | "<" | "<=" | ">" | ">=" .
+  END Parva.

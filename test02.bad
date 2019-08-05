@@ -1,0 +1,6 @@
+  void Main () {
+    const i = O;
+    do
+      i++;
+    while (i < 10);
+  } // Main

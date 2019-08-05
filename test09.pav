@@ -1,0 +1,12 @@
+  void Main () {
+    int i;
+    read(i);
+    readLine(i);
+    read();      // wrong
+    readLine();  // okay
+
+    write(i);
+    writeLine(i);
+    write();     // wrong
+    writeLine(); // okay
+  } // Main

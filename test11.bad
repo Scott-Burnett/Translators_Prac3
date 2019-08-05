@@ -1,0 +1,7 @@
+  void Main () {
+    set s;
+    int i, j, k;
+    s = { [ ] };
+    s = {1, s, 3};
+  } // Main
+

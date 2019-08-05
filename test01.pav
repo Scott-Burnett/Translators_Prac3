@@ -1,0 +1,5 @@
+  void Main () {
+    if (a)
+      c = d;
+    else c = 12;
+  } // Main

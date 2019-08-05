@@ -1,0 +1,19 @@
+COMPILER Calc  $CN
+/* Redelinghuys van Dyk && Scott Burnett */
+
+CHARACTERS
+  digit      = "0123456789" .
+  hexdigit   = digit + "ABCDEF" .
+
+TOKENS
+  decNumber  = digit { digit } .
+  hexNumber  = ("$" hexdigit { hexdigit }) | ("0" hexdigit { hexdigit } "H") .
+
+IGNORE CHR(0) .. CHR(31)
+
+PRODUCTIONS
+  Calc       = { Expression "=" } EOF .
+  Expression = Term { "+" Term  |  "-" Term } .
+  Term       = Factor { "*" Factor |  "/" Factor } .
+  Factor     = "abs" "(" Expression ")" | decNumber | hexNumber | "(" Expression ")" | Expression "!" .
+END Calc.

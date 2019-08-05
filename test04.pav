@@ -1,0 +1,5 @@
+  void Main () {
+    const zero = 0;
+    const bad = 00;
+    const ok = 1234;
+  } // Main

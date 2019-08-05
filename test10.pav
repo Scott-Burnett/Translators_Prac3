@@ -1,0 +1,4 @@
+  void Main () {
+    set s;
+    set[] sets = new set[127];
+  } // Main

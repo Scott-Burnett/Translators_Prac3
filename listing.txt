@@ -1,0 +1,31 @@
+  LL1 warning in booleanExpr: "||" is the start & successor of a deletable structure
+  LL1 warning in booleanExpr: ident is the start of several alternatives
+  LL1 warning in booleanExpr: "or" is the start & successor of a deletable structure
+  LL1 warning in andExpr: "&&" is the start & successor of a deletable structure
+  LL1 warning in andExpr: ident is the start of several alternatives
+  LL1 warning in andExpr: "and" is the start & successor of a deletable structure
+  LL1 warning in notExpr: ident is the start of several alternatives
+
+   1 COMPILER Bool  $CN
+   2 /* Redelinghuys van Dyk && Scott Burnett */
+   3 
+   4 CHARACTERS
+   5   letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" .
+   6   lf = CHR(10) .
+   7   cr = CHR(13) .
+   8 TOKENS
+   9   ident = letter { letter } .
+  10   EOL = cr lf .
+  11 
+  12   IGNORE CHR(9) .. CHR(13)
+  13   
+  14 PRODUCTIONS
+  15   Bool = ident "=" booleanExpr ";" .
+  16   booleanExpr = (ident {"||" andExpr}) | (ident {"or" andExpr}) | ("(" booleanExpr ")") .
+  17   andExpr = (ident {"&&" notExpr}) | (ident {"and" notExpr}) . 
+  18   notExpr = (ident) | ("not" notExpr) | ("!" notExpr) | (booleanExpr) .
+  19   
+  20 END Bool.
+
+0 errors detected
+7 warnings detected

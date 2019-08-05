@@ -1,0 +1,4 @@
+  void Main () {
+    char c;
+    string[] char;
+  } // Main

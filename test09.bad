@@ -1,0 +1,6 @@
+  void Main () {
+    int i;
+    read(5);
+    readLine('prompt', value);;;
+    writeLine("\7");
+  } // Main

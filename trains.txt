@@ -1,0 +1,38 @@
+loco coach coach coach coach coach guard .             (* valid - passenger train *)
+
+loco coal coal open fuel open cattle cattle brake .    (* valid - freight train *)
+
+loco cattle open coach coach coach guard .             (* valid - mixed freight/passenger train *)
+
+loco loco open open coach coach guard .                (* valid *)
+
+loco loco open fuel open fuel brake .                  (* valid - freight train with fuel *)
+
+loco loco open fuel fuel open fuel brake .             (* valid - freight train with fuel *)
+
+loco open fuel open coach coach guard .                (* valid - mixed train with fuel *)
+
+loco loco open open coach coach brake .                (* invalid *)
+
+loco loco open open coach coach guard brake .          (* invalid *)
+
+loco loco open open coach coach open guard .           (* invalid *)
+
+loco fuel open fuel open brake .                       (* invalid *)
+
+loco loco fuel fuel fuel brake .                       (* invalid *)
+
+loco open fuel open fuel open coach .                  (* invalid *)
+
+loco open fuel open fuel coach guard .                 (* invalid *)
+
+loco coach coach coach .                               (* invalid *)
+
+loco .                                                 (* valid - loco travelling light *)
+
+loco loco .                                            (* valid *)
+
+loco brake .                                           (* valid *)
+
+loco guard .                                           (* valid *)
+

@@ -1,0 +1,21 @@
+void main () {
+  const
+    TooBigANumber = 328000;
+    Zero = 0;
+  int
+    Valu, Smallest, Largest, Total;
+  const
+    Min = Zero;
+  Total = Zero;
+  if (Valu);
+  read (Valu); if (Valu > Min) write(Valu);
+  Largest = Valu; Smallest = Valu;
+  while (Valu <> Zero) {
+    Total = Total + Valu
+    if (Valu > = Largest) Largest = Value;
+    if (Valu < Smallest) Smallest = Valu;
+    read(Valu); if (Valu > Zero) write(Valu)
+  };
+  write("TOTAL:", Total, " LARGEST:", Largest);
+  write("SMALLEST: , SMALLEST)
+}

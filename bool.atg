@@ -1,0 +1,20 @@
+COMPILER Bool  $CN
+/* Redelinghuys van Dyk && Scott Burnett */
+
+CHARACTERS
+  letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" .
+  lf = CHR(10) .
+  cr = CHR(13) .
+TOKENS
+  ident = letter { letter } .
+  EOL = cr lf .
+
+  IGNORE CHR(9) .. CHR(13)
+  
+PRODUCTIONS
+  Bool = ident "=" booleanExpr ";" .
+  booleanExpr = (ident {"||" andExpr}) | (ident {"or" andExpr}) | ("(" booleanExpr ")") .
+  andExpr = (ident {"&&" notExpr}) | (ident {"and" notExpr}) . 
+  notExpr = (ident) | ("not" notExpr) | ("!" notExpr) | (booleanExpr) .
+  
+END Bool.

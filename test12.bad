@@ -1,0 +1,5 @@
+  void Main () {
+    set s;
+    s = {1 ... 9};
+    bool i = 3 * j in s;
+  } // Main

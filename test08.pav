@@ -1,0 +1,7 @@
+  void Main () {
+    int i;
+    ++i;
+    --i;
+    i++;
+    i--;
+  } // Main

@@ -1,0 +1,19 @@
+  void Main() {
+  // Demonstrate various statements
+    int age;
+    readLine("How old are you? ", age);
+    if ((age < 5) || (age > 75))
+      writeLine("I find that hard to believe");
+    else {
+      repeat
+        ++age;
+        writeLine("Happy birthday ");
+        if (age == 75) {
+          write("That's quite enough for one career");
+          break;
+        }
+      until (false);
+      writeLine(" - time to retire gracefully");
+    }
+  } // Main
+

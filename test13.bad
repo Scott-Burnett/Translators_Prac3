@@ -1,0 +1,5 @@
+  void Main () {
+    set s, t = s + { 'a', 'e', 'i', 'o', 'u };
+    int i = 9O0;
+    if (2 **  i in { 1, 2, 3 .. 8 } + {}) writeLine("bad compiler");
+  } // Main
