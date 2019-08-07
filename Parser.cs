@@ -17,12 +17,12 @@ public class Parser {
 	public const int semicolon_Sym = 4;
 	public const int barbar_Sym = 5;
 	public const int or_Sym = 6;
-	public const int lparen_Sym = 7;
-	public const int rparen_Sym = 8;
-	public const int andand_Sym = 9;
-	public const int and_Sym = 10;
-	public const int not_Sym = 11;
-	public const int bang_Sym = 12;
+	public const int andand_Sym = 7;
+	public const int and_Sym = 8;
+	public const int bang_Sym = 9;
+	public const int not_Sym = 10;
+	public const int lparen_Sym = 11;
+	public const int rparen_Sym = 12;
 	public const int NOT_SYM = 13;
 	// pragmas
 
@@ -115,56 +115,61 @@ public class Parser {
 		Expect(equal_Sym);
 		booleanExpr();
 		Expect(semicolon_Sym);
+		if (la.kind == EOL_Sym) {
+			Get();
+		}
 	}
 
 	static void booleanExpr() {
-		if (la.kind == ident_Sym) {
-			Get();
-			while (la.kind == barbar_Sym) {
-				Get();
-				andExpr();
+		andExpr();
+		while (StartOf(1)) {
+			if (la.kind == barbar_Sym || la.kind == or_Sym) {
+				if (la.kind == barbar_Sym) {
+					Get();
+				} else {
+					Get();
+				}
 			}
-		} else if (la.kind == ident_Sym) {
-			Get();
-			while (la.kind == or_Sym) {
-				Get();
-				andExpr();
-			}
-		} else if (la.kind == lparen_Sym) {
-			Get();
-			booleanExpr();
-			Expect(rparen_Sym);
-		} else SynErr(14);
+			andExpr();
+		}
 	}
 
 	static void andExpr() {
-		if (la.kind == ident_Sym) {
-			Get();
-			while (la.kind == andand_Sym) {
-				Get();
-				notExpr();
+		notExpr();
+		while (StartOf(2)) {
+			if (la.kind == andand_Sym || la.kind == and_Sym) {
+				if (la.kind == andand_Sym) {
+					Get();
+				} else {
+					Get();
+				}
 			}
-		} else if (la.kind == ident_Sym) {
-			Get();
-			while (la.kind == and_Sym) {
-				Get();
-				notExpr();
-			}
-		} else SynErr(15);
+			notExpr();
+		}
 	}
 
 	static void notExpr() {
-		if (la.kind == ident_Sym) {
-			Get();
-		} else if (la.kind == not_Sym) {
-			Get();
-			notExpr();
-		} else if (la.kind == bang_Sym) {
-			Get();
-			notExpr();
-		} else if (la.kind == ident_Sym || la.kind == lparen_Sym) {
+		if (la.kind == ident_Sym || la.kind == bang_Sym || la.kind == not_Sym) {
+			if (la.kind == bang_Sym || la.kind == not_Sym) {
+				if (la.kind == bang_Sym) {
+					Get();
+				} else {
+					Get();
+				}
+			}
+			Expect(ident_Sym);
+		} else if (la.kind == bang_Sym || la.kind == not_Sym || la.kind == lparen_Sym) {
+			if (la.kind == bang_Sym || la.kind == not_Sym) {
+				if (la.kind == bang_Sym) {
+					Get();
+				} else {
+					Get();
+				}
+			}
+			Expect(lparen_Sym);
 			booleanExpr();
-		} else SynErr(16);
+			Expect(rparen_Sym);
+		} else SynErr(14);
 	}
 
 
@@ -179,7 +184,9 @@ public class Parser {
 	}
 
 	static bool[,] set = {
-		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
+		{x,T,x,x, x,T,T,x, x,T,T,T, x,x,x},
+		{x,T,x,x, x,x,x,T, T,T,T,T, x,x,x}
 
 	};
 
@@ -298,16 +305,14 @@ public class Errors {
 			case 4: s = "\";\" expected"; break;
 			case 5: s = "\"||\" expected"; break;
 			case 6: s = "\"or\" expected"; break;
-			case 7: s = "\"(\" expected"; break;
-			case 8: s = "\")\" expected"; break;
-			case 9: s = "\"&&\" expected"; break;
-			case 10: s = "\"and\" expected"; break;
-			case 11: s = "\"not\" expected"; break;
-			case 12: s = "\"!\" expected"; break;
+			case 7: s = "\"&&\" expected"; break;
+			case 8: s = "\"and\" expected"; break;
+			case 9: s = "\"!\" expected"; break;
+			case 10: s = "\"not\" expected"; break;
+			case 11: s = "\"(\" expected"; break;
+			case 12: s = "\")\" expected"; break;
 			case 13: s = "??? expected"; break;
-			case 14: s = "invalid booleanExpr"; break;
-			case 15: s = "invalid andExpr"; break;
-			case 16: s = "invalid notExpr"; break;
+			case 14: s = "invalid notExpr"; break;
 
 			default: s = "error " + n; break;
 		}

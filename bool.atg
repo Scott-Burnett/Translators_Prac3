@@ -2,19 +2,22 @@ COMPILER Bool  $CN
 /* Redelinghuys van Dyk && Scott Burnett */
 
 CHARACTERS
-  letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvwxyz" .
-  lf = CHR(10) .
-  cr = CHR(13) .
+  cr         = CHR(13) .
+  lf         = CHR(10) .
+  backslash  = CHR(92) .
+  control    = CHR(0) .. CHR(31) .
+  letter     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             + "abcdefghijklmnopqrstuvwxyz" .
 TOKENS
   ident = letter { letter } .
   EOL = cr lf .
 
-  IGNORE CHR(9) .. CHR(13)
+  IGNORE CHR(9) .. CHR(31)
   
 PRODUCTIONS
   Bool = ident "=" booleanExpr ";" .
-  booleanExpr = (ident {"||" andExpr}) | (ident {"or" andExpr}) | ("(" booleanExpr ")") .
-  andExpr = (ident {"&&" notExpr}) | (ident {"and" notExpr}) . 
-  notExpr = (ident) | ("not" notExpr) | ("!" notExpr) | (booleanExpr) .
+  booleanExpr = andExpr { [ "||" | "or" ] andExpr } .
+  andExpr = notExpr { [ "&&" | "and" ] notExpr } . 
+  notExpr = ( [ "!" | "not" ] ident ) | ( ["!" | "not" ] "(" booleanExpr ")" ) .
   
 END Bool.

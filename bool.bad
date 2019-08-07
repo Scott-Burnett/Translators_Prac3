@@ -1,7 +1,7 @@
-  a = true;
-  b = false;
-  c = a AND b OR true;
-  d = !true;
-  e = ! not true;
-  f = x || !y && z;
-  g = a && b or c) and d;
+a = true;
+b = false;
+c = a AND b OR true;
+d = !true;
+e = ! not true;
+f = x || !y && z;
+g = a && b or c) and d;

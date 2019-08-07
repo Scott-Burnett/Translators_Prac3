@@ -73,19 +73,19 @@ public class Scanner {
 	const int semicolon_Sym = 4;
 	const int barbar_Sym = 5;
 	const int or_Sym = 6;
-	const int lparen_Sym = 7;
-	const int rparen_Sym = 8;
-	const int andand_Sym = 9;
-	const int and_Sym = 10;
-	const int not_Sym = 11;
-	const int bang_Sym = 12;
+	const int andand_Sym = 7;
+	const int and_Sym = 8;
+	const int bang_Sym = 9;
+	const int not_Sym = 10;
+	const int lparen_Sym = 11;
+	const int rparen_Sym = 12;
 	const int NOT_SYM = 13;
 	// pragmas
 
 	static short[] start = {
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0, 12,  0,  0,  0,  0, 10,  0,  8,  9,  0,  0,  0,  0,  0,  0,
+	  0, 10,  0,  0,  0,  0,  8,  0, 11, 12,  0,  0,  0,  0,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  5,  0,  4,  0,  0,
 	  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,
@@ -134,7 +134,11 @@ public class Scanner {
 		ignore = new BitArray(charSetSize+1);
 		ignore[' '] = true;  // blanks are always white space
 		ignore[9] = true; ignore[10] = true; ignore[11] = true; ignore[12] = true; 
-		ignore[13] = true; 
+		ignore[13] = true; ignore[14] = true; ignore[15] = true; ignore[16] = true; 
+		ignore[17] = true; ignore[18] = true; ignore[19] = true; ignore[20] = true; 
+		ignore[21] = true; ignore[22] = true; ignore[23] = true; ignore[24] = true; 
+		ignore[25] = true; ignore[26] = true; ignore[27] = true; ignore[28] = true; 
+		ignore[29] = true; ignore[30] = true; ignore[31] = true; 
 		//--- AW: fill token list
 		tokens = new Token();  // first token is a dummy
 		Token node = tokens;
@@ -201,16 +205,16 @@ public class Scanner {
 			case 7:
 				{ t.kind = barbar_Sym; goto done; }
 			case 8:
-				{ t.kind = lparen_Sym; goto done; }
-			case 9:
-				{ t.kind = rparen_Sym; goto done; }
-			case 10:
-				if (ch == '&') { buf.Append(ch); NextCh(); goto case 11; }
+				if (ch == '&') { buf.Append(ch); NextCh(); goto case 9; }
 				else { t.kind = noSym; goto done; }
-			case 11:
+			case 9:
 				{ t.kind = andand_Sym; goto done; }
-			case 12:
+			case 10:
 				{ t.kind = bang_Sym; goto done; }
+			case 11:
+				{ t.kind = lparen_Sym; goto done; }
+			case 12:
+				{ t.kind = rparen_Sym; goto done; }
 
 		}
 		done:
