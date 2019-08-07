@@ -4,7 +4,7 @@ using System.IO;
 using System.Collections;
 using System.Text;
 
-namespace Bool {
+namespace Parva {
 
 public class Token {
 	public int kind;    // token kind
@@ -63,34 +63,70 @@ public class Scanner {
 	const char EOL = '\n';
 	const int  eofSym = 0;
 	const int charSetSize = 256;
-	const int maxT = 13;
-	const int noSym = 13;
+	const int maxT = 49;
+	const int noSym = 49;
 	// terminals
 	const int EOF_SYM = 0;
-	const int ident_Sym = 1;
-	const int EOL_Sym = 2;
-	const int equal_Sym = 3;
-	const int semicolon_Sym = 4;
-	const int barbar_Sym = 5;
-	const int or_Sym = 6;
-	const int andand_Sym = 7;
-	const int and_Sym = 8;
-	const int bang_Sym = 9;
-	const int not_Sym = 10;
-	const int lparen_Sym = 11;
-	const int rparen_Sym = 12;
-	const int NOT_SYM = 13;
+	const int identifier_Sym = 1;
+	const int number_Sym = 2;
+	const int stringLit_Sym = 3;
+	const int charLit_Sym = 4;
+	const int void_Sym = 5;
+	const int lparen_Sym = 6;
+	const int rparen_Sym = 7;
+	const int lbrace_Sym = 8;
+	const int rbrace_Sym = 9;
+	const int semicolon_Sym = 10;
+	const int const_Sym = 11;
+	const int comma_Sym = 12;
+	const int equal_Sym = 13;
+	const int true_Sym = 14;
+	const int false_Sym = 15;
+	const int null_Sym = 16;
+	const int lbrack_Sym = 17;
+	const int rbrack_Sym = 18;
+	const int if_Sym = 19;
+	const int else_Sym = 20;
+	const int while_Sym = 21;
+	const int for_Sym = 22;
+	const int repeat_Sym = 23;
+	const int until_Sym = 24;
+	const int break_Sym = 25;
+	const int return_Sym = 26;
+	const int halt_Sym = 27;
+	const int read_Sym = 28;
+	const int write_Sym = 29;
+	const int plus_Sym = 30;
+	const int minus_Sym = 31;
+	const int new_Sym = 32;
+	const int bang_Sym = 33;
+	const int lbrackrbrack_Sym = 34;
+	const int int_Sym = 35;
+	const int bool_Sym = 36;
+	const int char_Sym = 37;
+	const int barbar_Sym = 38;
+	const int star_Sym = 39;
+	const int slash_Sym = 40;
+	const int andand_Sym = 41;
+	const int percent_Sym = 42;
+	const int equalequal_Sym = 43;
+	const int bangequal_Sym = 44;
+	const int less_Sym = 45;
+	const int lessequal_Sym = 46;
+	const int greater_Sym = 47;
+	const int greaterequal_Sym = 48;
+	const int NOT_SYM = 49;
 	// pragmas
 
 	static short[] start = {
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  2,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	  0, 10,  0,  0,  0,  0,  8,  0, 11, 12,  0,  0,  0,  0,  0,  0,
-	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  5,  0,  4,  0,  0,
+	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	  0, 35,  4,  0,  0, 28, 26,  7, 12, 13, 24, 19, 17, 20,  0, 25,
+	  3, 11, 11, 11, 11, 11, 11, 11, 11, 11,  0, 16, 36, 33, 37,  0,
 	  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
-	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  0,  0,  0,  0,
+	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 34,  0, 18,  0,  0,
 	  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
-	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  0,  6,  0,  0,  0,
+	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 14, 22, 15,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -134,11 +170,7 @@ public class Scanner {
 		ignore = new BitArray(charSetSize+1);
 		ignore[' '] = true;  // blanks are always white space
 		ignore[9] = true; ignore[10] = true; ignore[11] = true; ignore[12] = true; 
-		ignore[13] = true; ignore[14] = true; ignore[15] = true; ignore[16] = true; 
-		ignore[17] = true; ignore[18] = true; ignore[19] = true; ignore[20] = true; 
-		ignore[21] = true; ignore[22] = true; ignore[23] = true; ignore[24] = true; 
-		ignore[25] = true; ignore[26] = true; ignore[27] = true; ignore[28] = true; 
-		ignore[29] = true; ignore[30] = true; ignore[31] = true; 
+		ignore[13] = true; 
 		//--- AW: fill token list
 		tokens = new Token();  // first token is a dummy
 		Token node = tokens;
@@ -164,12 +196,72 @@ public class Scanner {
 	}
 
 
+	static bool Comment0() {
+		int level = 1, line0 = line, lineStart0 = lineStart;
+		NextCh();
+		if (ch == '*') {
+			NextCh();
+			for(;;) {
+				if (ch == '*') {
+					NextCh();
+					if (ch == '/') {
+						level--;
+						if (level == 0) { oldEols = line - line0; NextCh(); return true; }
+						NextCh();
+					}
+				} else if (ch == Buffer.EOF) return false;
+				else NextCh();
+			}
+		} else {
+			if (ch == EOL) { line--; lineStart = lineStart0; }
+			pos = pos - 2; Buffer.Pos = pos+1; NextCh();
+		}
+		return false;
+	}
+
+	static bool Comment1() {
+		int level = 1, line0 = line, lineStart0 = lineStart;
+		NextCh();
+		if (ch == '/') {
+			NextCh();
+			for(;;) {
+				if (ch == 10) {
+					level--;
+					if (level == 0) { oldEols = line - line0; NextCh(); return true; }
+					NextCh();
+				} else if (ch == Buffer.EOF) return false;
+				else NextCh();
+			}
+		} else {
+			if (ch == EOL) { line--; lineStart = lineStart0; }
+			pos = pos - 2; Buffer.Pos = pos+1; NextCh();
+		}
+		return false;
+	}
+
 
 	static void CheckLiteral() {
 		switch (t.val) {
-			case "or": t.kind = or_Sym; break;
-			case "and": t.kind = and_Sym; break;
-			case "not": t.kind = not_Sym; break;
+			case "void": t.kind = void_Sym; break;
+			case "const": t.kind = const_Sym; break;
+			case "true": t.kind = true_Sym; break;
+			case "false": t.kind = false_Sym; break;
+			case "null": t.kind = null_Sym; break;
+			case "if": t.kind = if_Sym; break;
+			case "else": t.kind = else_Sym; break;
+			case "while": t.kind = while_Sym; break;
+			case "for": t.kind = for_Sym; break;
+			case "repeat": t.kind = repeat_Sym; break;
+			case "until": t.kind = until_Sym; break;
+			case "break": t.kind = break_Sym; break;
+			case "return": t.kind = return_Sym; break;
+			case "halt": t.kind = halt_Sym; break;
+			case "read": t.kind = read_Sym; break;
+			case "write": t.kind = write_Sym; break;
+			case "new": t.kind = new_Sym; break;
+			case "int": t.kind = int_Sym; break;
+			case "bool": t.kind = bool_Sym; break;
+			case "char": t.kind = char_Sym; break;
 			default: break;
 		}
 	}
@@ -177,7 +269,7 @@ public class Scanner {
 	/* AW Scan() renamed to NextToken() */
 	static Token NextToken() {
 		while (ignore[ch]) NextCh();
-
+		if (ch == '/' && Comment0() ||ch == '/' && Comment1()) return NextToken();
 		t = new Token();
 		t.pos = pos; t.col = pos - lineStart + 1; t.line = line;
 		int state = start[ch];
@@ -187,34 +279,104 @@ public class Scanner {
 			case -1: { t.kind = eofSym; goto done; } // NextCh already done /* pdt */
 			case 0: { t.kind = noSym; goto done; }   // NextCh already done
 			case 1:
-				if ((ch >= 'A' && ch <= 'Z'
+				if ((ch >= '0' && ch <= '9'
+				  || ch >= 'A' && ch <= 'Z'
+				  || ch == '_'
 				  || ch >= 'a' && ch <= 'z')) { buf.Append(ch); NextCh(); goto case 1; }
-				else { t.kind = ident_Sym; t.val = buf.ToString(); CheckLiteral(); return t; }
+				else { t.kind = identifier_Sym; t.val = buf.ToString(); CheckLiteral(); return t; }
 			case 2:
-				if ((ch == 10)) { buf.Append(ch); NextCh(); goto case 3; }
-				else { t.kind = noSym; goto done; }
+				if ((ch >= '0' && ch <= '9')) { buf.Append(ch); NextCh(); goto case 2; }
+				else { t.kind = number_Sym; goto done; }
 			case 3:
-				{ t.kind = EOL_Sym; goto done; }
+				{ t.kind = number_Sym; goto done; }
 			case 4:
-				{ t.kind = equal_Sym; goto done; }
-			case 5:
-				{ t.kind = semicolon_Sym; goto done; }
-			case 6:
-				if (ch == '|') { buf.Append(ch); NextCh(); goto case 7; }
+				if ((ch >= ' ' && ch <= '!'
+				  || ch >= '#' && ch <= '['
+				  || ch >= ']' && ch <= 255)) { buf.Append(ch); NextCh(); goto case 4; }
+				else if ((ch == 92)) { buf.Append(ch); NextCh(); goto case 5; }
+				else if (ch == '"') { buf.Append(ch); NextCh(); goto case 6; }
 				else { t.kind = noSym; goto done; }
+			case 5:
+				if ((ch >= ' ' && ch <= 255)) { buf.Append(ch); NextCh(); goto case 4; }
+				else { t.kind = noSym; goto done; }
+			case 6:
+				{ t.kind = stringLit_Sym; goto done; }
 			case 7:
-				{ t.kind = barbar_Sym; goto done; }
+				if ((ch >= ' ' && ch <= '&'
+				  || ch >= '(' && ch <= '['
+				  || ch >= ']' && ch <= 255)) { buf.Append(ch); NextCh(); goto case 8; }
+				else if ((ch == 92)) { buf.Append(ch); NextCh(); goto case 9; }
+				else { t.kind = noSym; goto done; }
 			case 8:
-				if (ch == '&') { buf.Append(ch); NextCh(); goto case 9; }
+				if (ch == 39) { buf.Append(ch); NextCh(); goto case 10; }
 				else { t.kind = noSym; goto done; }
 			case 9:
-				{ t.kind = andand_Sym; goto done; }
+				if ((ch >= ' ' && ch <= 255)) { buf.Append(ch); NextCh(); goto case 8; }
+				else { t.kind = noSym; goto done; }
 			case 10:
-				{ t.kind = bang_Sym; goto done; }
+				{ t.kind = charLit_Sym; goto done; }
 			case 11:
-				{ t.kind = lparen_Sym; goto done; }
+				if ((ch >= '0' && ch <= '9')) { buf.Append(ch); NextCh(); goto case 2; }
+				else { t.kind = number_Sym; goto done; }
 			case 12:
+				{ t.kind = lparen_Sym; goto done; }
+			case 13:
 				{ t.kind = rparen_Sym; goto done; }
+			case 14:
+				{ t.kind = lbrace_Sym; goto done; }
+			case 15:
+				{ t.kind = rbrace_Sym; goto done; }
+			case 16:
+				{ t.kind = semicolon_Sym; goto done; }
+			case 17:
+				{ t.kind = comma_Sym; goto done; }
+			case 18:
+				{ t.kind = rbrack_Sym; goto done; }
+			case 19:
+				{ t.kind = plus_Sym; goto done; }
+			case 20:
+				{ t.kind = minus_Sym; goto done; }
+			case 21:
+				{ t.kind = lbrackrbrack_Sym; goto done; }
+			case 22:
+				if (ch == '|') { buf.Append(ch); NextCh(); goto case 23; }
+				else { t.kind = noSym; goto done; }
+			case 23:
+				{ t.kind = barbar_Sym; goto done; }
+			case 24:
+				{ t.kind = star_Sym; goto done; }
+			case 25:
+				{ t.kind = slash_Sym; goto done; }
+			case 26:
+				if (ch == '&') { buf.Append(ch); NextCh(); goto case 27; }
+				else { t.kind = noSym; goto done; }
+			case 27:
+				{ t.kind = andand_Sym; goto done; }
+			case 28:
+				{ t.kind = percent_Sym; goto done; }
+			case 29:
+				{ t.kind = equalequal_Sym; goto done; }
+			case 30:
+				{ t.kind = bangequal_Sym; goto done; }
+			case 31:
+				{ t.kind = lessequal_Sym; goto done; }
+			case 32:
+				{ t.kind = greaterequal_Sym; goto done; }
+			case 33:
+				if (ch == '=') { buf.Append(ch); NextCh(); goto case 29; }
+				else { t.kind = equal_Sym; goto done; }
+			case 34:
+				if (ch == ']') { buf.Append(ch); NextCh(); goto case 21; }
+				else { t.kind = lbrack_Sym; goto done; }
+			case 35:
+				if (ch == '=') { buf.Append(ch); NextCh(); goto case 30; }
+				else { t.kind = bang_Sym; goto done; }
+			case 36:
+				if (ch == '=') { buf.Append(ch); NextCh(); goto case 31; }
+				else { t.kind = less_Sym; goto done; }
+			case 37:
+				if (ch == '=') { buf.Append(ch); NextCh(); goto case 32; }
+				else { t.kind = greater_Sym; goto done; }
 
 		}
 		done:

@@ -1,33 +1,80 @@
-  LL1 warning in andExpr: ident is the start & successor of a deletable structure
-  LL1 warning in andExpr: "!" is the start & successor of a deletable structure
-  LL1 warning in andExpr: "not" is the start & successor of a deletable structure
-  LL1 warning in andExpr: "(" is the start & successor of a deletable structure
-  LL1 warning in notExpr: "!" is the start of several alternatives
-  LL1 warning in notExpr: "not" is the start of several alternatives
+  LL1 warning in Statement: "{" is the start of several alternatives
+  LL1 warning in IfStatement: "if" is the start of several alternatives
+  LL1 warning in Unmatched: "if" is the start of several alternatives
 
-   1 COMPILER Bool  $CN
-   2 /* Redelinghuys van Dyk && Scott Burnett */
-   3 
-   4 CHARACTERS
-   5   cr         = CHR(13) .
-   6   lf         = CHR(10) .
-   7   backslash  = CHR(92) .
-   8   control    = CHR(0) .. CHR(31) .
-   9   letter     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  10              + "abcdefghijklmnopqrstuvwxyz" .
-  11 TOKENS
-  12   ident = letter { letter } .
-  13   EOL = cr lf .
-  14 
-  15   IGNORE CHR(9) .. CHR(31)
-  16   
-  17 PRODUCTIONS
-  18   Bool = ident "=" booleanExpr ";" [ EOL ] .
-  19   booleanExpr = andExpr { [ "||" | "or" ] andExpr } .
-  20   andExpr = notExpr { [ "&&" | "and" ] notExpr } . 
-  21   notExpr = ( [ "!" | "not" ] ident ) | ( ["!" | "not" ] "(" booleanExpr ")" ) .
-  22   
-  23 END Bool.
+   1   COMPILER Parva $CN
+   2   /* Parva level 1 grammar  - Coco/R for C# (EBNF)
+   3      P.D. Terry, Rhodes University, 2003
+   4      Grammar only */
+   5 
+   6   CHARACTERS
+   7     lf         = CHR(10) .
+   8     backslash  = CHR(92) .
+   9     control    = CHR(0) .. CHR(31) .
+  10     letter     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  11                  + "abcdefghijklmnopqrstuvwxyz" .
+  12     digit      = "0123456789" .
+  13 	nonZero    = "123456789" . 
+  14     stringCh   = ANY - '"' - control - backslash .
+  15     charCh     = ANY - "'" - control - backslash .
+  16     printable  = ANY - control .
+  17 
+  18   TOKENS
+  19     identifier = letter { letter | digit | "_" } .
+  20     number     = nonZero {digit} | digit .
+  21     stringLit  = '"' { stringCh | backslash printable } '"' .
+  22     charLit    = "'" ( charCh   | backslash printable ) "'" .
+  23 
+  24   COMMENTS FROM "//" TO lf
+  25   COMMENTS FROM "/*" TO "*/"
+  26   IGNORE CHR(9) .. CHR(13)
+  27 
+  28   PRODUCTIONS
+  29     Parva             = "void" identifier "(" ")" Block .
+  30     Block             = "{" { Statement } "}" .
+  31     Statement         =   Block | ";"
+  32                         | ConstDeclarations | VarDeclarations
+  33                         | Assignment | IfStatement | WhileStatement
+  34                         | ReturnStatement | HaltStatement
+  35                         | ReadStatement | WriteStatement 
+  36 						| ForStatement | RUntilStatement
+  37 						| BreakStatement .
+  38     ConstDeclarations = "const" OneConst { "," OneConst } ";" .
+  39     OneConst          = identifier "=" Constant .
+  40     Constant          =   number | charLit
+  41                         | "true" | "false" | "null" .
+  42     VarDeclarations   = Type OneVar { "," OneVar } ";" .
+  43     OneVar            = identifier [ "=" Expression ] .
+  44     Assignment        = Designator "=" Expression ";" .
+  45     Designator        = identifier [ "[" Expression "]" ] .
+  46     IfStatement       = Matched | Unmatched .
+  47 	Matched           = ("if" "(" Condition ")" Matched "else" Matched )| Block .
+  48 	Unmatched         = "if" "(" Condition ")" Statement | "if" "(" Condition ")" Matched "else" Unmatched . 
+  49     WhileStatement    = "while" "(" Condition ")" Statement .
+  50 	ForStatement      = "for" "(" [Assignment] ";" Condition ";" Assignment ")" Statement .
+  51 	RUntilStatement   = "repeat" Statement "until" "(" Condition ")" .
+  52 	BreakStatement	  = "break" ";" .
+  53     ReturnStatement   = "return" ";" .
+  54     HaltStatement     = "halt" ";" .
+  55     ReadStatement     = "read" "(" ReadElement
+  56                                    { "," ReadElement } ")" ";" .
+  57     ReadElement       = stringLit | Designator .
+  58     WriteStatement    = "write" "(" WriteElement
+  59                                     { "," WriteElement } ")" ";" .
+  60     WriteElement      = stringLit | Expression .
+  61     Condition         = Expression .
+  62     Expression        = AddExp [ RelOp AddExp ] .
+  63     AddExp            = [ "+" | "-" ] Term { AddOp Term } .
+  64     Term              = Factor { MulOp Factor } .
+  65     Factor            =   Designator | Constant
+  66                         | "new" BasicType "[" Expression "]"
+  67                         | "!" Factor | "(" Expression ")" .
+  68     Type              = BasicType [ "[]" ] .
+  69     BasicType         = "int" | "bool" | "char" .
+  70     AddOp             = "+" | "-" | "||" .
+  71     MulOp             = "*" | "/" | "&&" | "%" .
+  72     RelOp             = "==" | "!=" | "<" | "<=" | ">" | ">=" .
+  73   END Parva.
 
 0 errors detected
-6 warnings detected
+3 warnings detected
